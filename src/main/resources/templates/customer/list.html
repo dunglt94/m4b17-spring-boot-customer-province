@@ -7,7 +7,7 @@
 <h3>Customers</h3>
 <div style="margin-bottom: 10px; margin-left: 10px">
   <form th:action="@{/customers}" method="get">
-    <label><input type="search" name="search" placeholder="Enter customer name"></label>
+    <label><input type="search" name="search" placeholder="Enter customer name" th:value="${search}"></label>
     <button type="submit" class="btn btn-primary">Search</button>
   </form>
 </div>
@@ -37,9 +37,16 @@
   <tbody>
   <tr th:each="c,cStatus : ${customers}">
     <td th:text="${cStatus.count}"></td>
-    <td th:text="${c.firstName}"></td>
-    <td th:text="${c.lastName}"></td>
-    <td th:text="${c.getProvince().name}"></td>
+    <td><a th:href="@{/customers/view/{id}(id=${c.id})}" th:text="${c.firstName}"></a></td>
+    <td><a th:href="@{/customers/view/{id}(id=${c.id})}" th:text="${c.lastName}"></a></td>
+    <th:block th:if="${c.getProvince() != null}">
+      <!--        neu tinh !== null-->
+      <td th:text="${c.getProvince().getName()}"></td>
+    </th:block>
+    <th:block th:unless="${c.getProvince() != null}">
+      <!--        neu tinh !== null-->
+      <td >Không có dữ liệu</td>
+    </th:block>
     <td><a th:href="@{/customers/update/{id}(id=${c.id})}">update</a></td>
     <td><a th:href="@{/customers/delete/{id}(id=${c.id})}">delete</a></td>
   </tr>
@@ -47,11 +54,25 @@
 </table>
 <br>
 <div style="text-align: center">
-  <a class="btn btn-primary" th:if="${customers.hasPrevious()}"
-     th:href="@{/customers(page=${customers.number - 1})}">Previous</a>
-  <span th:text="${customers.number + 1}"></span> | <span th:text="${customers.totalPages}"></span>
-  <a class="btn btn-primary" th:if="${customers.hasNext()}"
-     th:href="@{/customers(page=${customers.number + 1})}"> Next</a>
+  <th:block th:if="${search == null}">
+    <a class="btn btn-primary" th:if="${customers.hasPrevious()}"
+       th:href="@{/customers(page=${customers.number - 1})}">
+      Previous
+    </a>
+    <span th:text="${customers.number + 1}"></span> | <span th:text="${customers.totalPages}"></span>
+    <a class="btn btn-primary" th:if="${customers.hasNext()}"
+       th:href="@{/customers(page=${customers.number + 1})}"> Next</a>
+  </th:block>
+  <th:block th:if="${search != null}">
+    <th:block th:if="${customers.hasPrevious()}">
+      <a th:href="@{/customers?page=__${customers.number - 1}__&search=__${search}__}">Previous</a>
+    </th:block>
+    <span th:text="${customers.number + 1}"></span> | <span th:text="${customers.totalPages}"></span>
+    <th:block th:if="${customers.hasNext()}">
+      <a th:href="@{/customers?page=__${customers.number + 1}__&search=__${search}__}">Next</a>
+    </th:block>
+  </th:block>
+
 </div>
 <footer th:replace="/layout/layout :: footer"></footer>
 </body>

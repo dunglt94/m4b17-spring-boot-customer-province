@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="/layout/layout :: head">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h3>Customer Details</h3>
+<p>
+    <a th:href="@{/customers}">
+        Back to customer list
+    </a>
+</p>
+<table id="list" style="width: 40%">
+    <thead>
+    <tr>
+        <th colspan="2">Customer details</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>ID: </td>
+        <td th:text="${customer.id}"></td>
+    </tr>
+    <tr>
+        <td>First Name: </td>
+        <td th:text="${customer.firstName}"></td>
+    </tr>
+    <tr>
+        <td>Last Name: </td>
+        <td th:text="${customer.lastName}"></td>
+    </tr>
+    <tr>
+        <td>Province: </td>
+        <td th:text="${customer.province.name}"></td>
+    </tr>
+    </tbody>
+</table>
+<footer th:replace="/layout/layout :: footer"></footer>
+</body>
+</html>

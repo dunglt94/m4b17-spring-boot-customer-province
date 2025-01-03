@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -41,6 +42,10 @@ public class CustomerController {
             if (customers.isEmpty()) {
                 customers = customerService.findAllByFullName(search.get(), pageable);
             }
+            model.addAttribute("search", search.orElse(""));
+            model.addAttribute("totalPages", customers.getTotalPages());
+            model.addAttribute("customers", customers);
+            return "customer/list";
         } else {
             customers = customerService.findAll(pageable);
         }
@@ -61,6 +66,16 @@ public class CustomerController {
         customerService.save(customer);
         redirectAttributes.addFlashAttribute("message", "Create new customer successfully");
         return "redirect:/customers";
+    }
+
+    @GetMapping("/view/{id}")
+    public String showProductView(@PathVariable Long id, ModelMap model) {
+        Optional<Customer> customer = customerService.findById(id);
+        if (customer.isEmpty()) {
+            return "error_404";
+        }
+        model.addAttribute("customer", customer.get());
+        return "customer/view";
     }
 
     @GetMapping("/update/{id}")
